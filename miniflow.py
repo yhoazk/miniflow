@@ -1,6 +1,7 @@
 """
-You need to change the Add() class below.
+Write the Linear#forward method below!
 """
+
 
 class Neuron:
     def __init__(self, inbound_neurons=[]):
@@ -22,57 +23,56 @@ class Neuron:
         Compute the output value based on `inbound_neurons` and
         store the result in self.value.
         """
-
+        raise NotImplemented
 
 
 class Input(Neuron):
     def __init__(self):
-        # an Input neuron has no inbound nodes,
-        # so no need to pass anything to the Node instantiator
+        # An Input Neuron has no inbound neurons,
+        # so no need to pass anything to the Neuron instantiator
         Neuron.__init__(self)
 
-    # NOTE: Input node is the only node where the value
-    # is passed as an argument to forward().
-    #
-    # All other neuron implementations should get the value
-    # of the previous neurons from self.inbound_neurons
-    #
-    # Example:
-    # val0 = self.inbound_neurons[0].value
+        # NOTE: Input Neuron is the only Neuron where the value
+        # may be passed as an argument to forward().
+        #
+        # All other Neuron implementations should get the value
+        # of the previous neurons from self.inbound_neurons
+        #
+        # Example:
+        # val0 = self.inbound_neurons[0].value
     def forward(self, value=None):
         # Overwrite the value if one is passed in.
         if value:
             self.value = value
 
 
-class Add(Neuron):
-    def __init__(self, *in_nodes):
-        # You could access `x` and `y` in forward with
-        # self.inbound_nodes[0] (`x`) and self.inbound_nodes[1] (`y`)
-        Neuron.__init__(self, [i for i in in_nodes])
+class Linear(Neuron):
+    def __init__(self, inputs, weights, bias):
+        Neuron.__init__(self, inputs)
+
+        # NOTE: The weights and bias properties here are not
+        # numbers, but rather references to other neurons.
+        # The weight and bias values are stored within the
+        # respective neurons.
+        self.weights = weights
+        self.bias = bias
 
     def forward(self):
         """
-        Set the value of this neuron (`self.value`) to the sum of it's inbound_nodes.
+        Set self.value to the value of the linear function output.
 
-        Your code here!
+        Your code goes here!
         """
-        #self.value = self.inbound_neurons[0].value + self.inbound_neurons[1].value
-        self.value = sum([ i.value for i in self.inbound_neurons])
-
-
-"""
-No need to change anything below here!
-"""
+        self.value = self.bias.value + sum([w.value * i.value for w,i in zip(self.weights, self.inbound_neurons)])
 
 
 def topological_sort(feed_dict):
     """
-    Sort generic nodes in topological order using Kahn's Algorithm.
+    Sort the neurons in topological order using Kahn's Algorithm.
 
-    `feed_dict`: A dictionary where the key is a `Input` node and the value is the respective value feed to that node.
+    `feed_dict`: A dictionary where the key is a `Input` Neuron and the value is the respective value feed to that Neuron.
 
-    Returns a list of sorted nodes.
+    Returns a list of sorted neurons.
     """
 
     input_neurons = [n for n in feed_dict.keys()]
@@ -108,19 +108,19 @@ def topological_sort(feed_dict):
     return L
 
 
-def forward_pass(output_neuron, sorted_neurons):
+def forward_pass(output_Neuron, sorted_neurons):
     """
     Performs a forward pass through a list of sorted neurons.
 
     Arguments:
 
-        `output_neuron`: A neuron in the graph, should be the output neuron (have no outgoing edges).
+        `output_Neuron`: A Neuron in the graph, should be the output Neuron (have no outgoing edges).
         `sorted_neurons`: a topologically sorted list of neurons.
 
-    Returns the output neuron's value
+    Returns the output Neuron's value
     """
 
     for n in sorted_neurons:
         n.forward()
 
-    return output_neuron.value
+    return output_Neuron.value
