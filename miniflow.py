@@ -46,10 +46,10 @@ class Input(Neuron):
 
 
 class Add(Neuron):
-    def __init__(self, x, y):
+    def __init__(self, *in_nodes):
         # You could access `x` and `y` in forward with
         # self.inbound_nodes[0] (`x`) and self.inbound_nodes[1] (`y`)
-        Neuron.__init__(self, [x, y])
+        Neuron.__init__(self, [i for i in in_nodes])
 
     def forward(self):
         """
@@ -57,8 +57,8 @@ class Add(Neuron):
 
         Your code here!
         """
-        #self.value = self.inbound_neurons[0] + self.inbound_neurons[1]
-        print(self.inbound_neurons[0].value)
+        #self.value = self.inbound_neurons[0].value + self.inbound_neurons[1].value
+        self.value = sum([ i.value for i in self.inbound_neurons])
 
 
 """
